@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Galactic Fighter - Pro</title>
+    <style>
+        * { box-sizing: border-box; touch-action: none; user-select: none; }
+        body { margin: 0; background: #020617; display: flex; justify-content: center; align-items: center; height: 100vh; color: #f8fafc; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        
+        #game-container { position: relative; width: 100%; max-width: 450px; height: 100vh; background: #000; overflow: hidden; border: 2px solid #1e293b; }
+        canvas { width: 100%; height: 100%; display: block; }
+        
+        /* Menu Styling */
+        #menu { position: absolute; inset: 0; background: #020617; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; gap: 15px; }
+        .btn { padding: 12px 30px; font-size: 16px; cursor: pointer; background: #3b82f6; border: none; color: white; border-radius: 8px; width: 200px; font-weight: bold; transition: 0.2s; }
+        .btn:active { transform: scale(0.95); background: #2563eb; }
+        .btn-score { background: #8b5cf6; } /* Purple for High Score */
+        
+        /* Gameplay UI */
+        .ui { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 50; }
+        .stat-group { display: flex; flex-direction: column; gap: 5px; }
+        .stat { background: rgba(15, 23, 42, 0.9); padding: 6px 12px; border-radius: 5px; border: 1px solid #334155; font-size: 14px; pointer-events: auto; }
+        
+        .control-btns { display: flex; gap: 5px; pointer-events: auto; }
+        .mini-btn { background: #475569; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        #pause-btn { background: #f59e0b; } /* Orange for Pause */
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="menu">
+            <h1 style="color:#3b82f6; margin:0; letter-spacing: 2px;">GALACTIC FIGHTER</h1>
+            <p id="high-score-display" style="color:#94a3b8; margin-bottom: 10px;">Best: 0</p>
+            <button class="btn" onclick="startGame(1)">START EASY</button>
+            <button class="btn" onclick="startGame(1.8)">START MEDIUM</button>
+            <button class="btn" onclick="startGame(2.5)">START HARD</button>
+            <button class="btn btn-score" onclick="showHighscore()">VIEW HIGH SCORE</button>
+        </div>
+
+        <div class="ui">
+            <div class="stat-group">
+                <div class="stat">Score: <span id="score">0</span></div>
+            </div>
+            <div class="control-btns">
+                <button id="pause-btn" class="mini-btn" onclick="togglePause()">PAUSE</button>
+                <button class="mini-btn" onclick="location.reload()">HOME</button>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const menu = document.getElementById('menu');
+        const hsDisplay = document.getElementById('high-score-display');
+        const pauseBtn = document.getElementById('pause-btn');
+
+        canvas.width = 450;
+        canvas.height = 800;
+
+        let score = 0, gameActive = false, isPaused = false, diff = 1;
+        let player = { x: 200, y: 700, w: 40, h: 40 };
+        let bullets = [], enemies = [], stars = [];
+        let spawnTimer = null;
+
+        // Initialize High Score on Load
+        hsDisplay.innerText = "Best: " + (localStorage.getItem('galacticHS') || 0);
+
+        // Stars setup
+        for(let i=0; i<50; i++) stars.push({x: Math.random()*450, y: Math.random()*800, s: Math.random()*2 + 1});
+
+        function showHighscore() {
+            const hs = localStorage.getItem('galacticHS') || 0;
+            alert("Your All-Time High Score: " + hs);
+        }
+
+        function startGame(d) {
+            diff = d;
+            menu.style.display = 'none';
+            gameActive = true;
+            isPaused = false;
+            score = 0;
+            scoreEl.innerText = "0";
+            bullets = [];
+            enemies = [];
+            spawnEnemy();
+            requestAnimationFrame(draw);
+        }
+
+        function togglePause() {
+            if (!gameActive) return;
+            isPaused = !isPaused;
+            pauseBtn.innerText = isPaused ? "RESUME" : "PAUSE";
+            pauseBtn.style.background = isPaused ? "#10b981" : "#f59e0b";
+            
+            if (!isPaused) {
+                spawnEnemy(); // Restart spawning
+                requestAnimationFrame(draw); // Restart loop
+            } else {
+                clearTimeout(spawnTimer); // Stop spawning
+            }
+        }
+
+        function spawnEnemy() {
+            if(!gameActive || isPaused) return;
+            enemies.push({ x: Math.random()*400, y: -50, w: 40, h: 40, speed: (2 + Math.random()) * diff });
+            spawnTimer = setTimeout(spawnEnemy, 1000 / diff);
+        }
+
+        function handleInput(e) {
+            if(!gameActive || isPaused) return;
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const x = clientX - rect.left;
+            player.x = (x * (canvas.width / rect.width)) - player.w/2;
+            
+            // Keep player on screen
+            if (player.x < 0) player.x = 0;
+            if (player.x > canvas.width - player.w) player.x = canvas.width - player.w;
+        }
+
+        window.addEventListener('mousemove', handleInput);
+        window.addEventListener('touchmove', e => { e.preventDefault(); handleInput(e); }, {passive: false});
+
+        let lastShot = 0;
+        function draw(t) {
+            if(!gameActive || isPaused) return;
+
+            // 1. Clear Screen
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Stars
+            ctx.fillStyle = '#334155';
+            stars.forEach(s => {
+                s.y += s.s;
+                if(s.y > 800) s.y = 0;
+                ctx.fillRect(s.x, s.y, 2, 2);
+            });
+
+            // 3. Player
+            ctx.fillStyle = '#3b82f6';
+            ctx.beginPath();
+            ctx.moveTo(player.x + player.w/2, player.y);
+            ctx.lineTo(player.x, player.y + player.h);
+            ctx.lineTo(player.x + player.w, player.y + player.h);
+            ctx.fill();
+
+            // 4. Auto-Shoot
+            if(t - lastShot > 250) {
+                bullets.push({x: player.x + player.w/2 - 2, y: player.y, w: 4, h: 15});
+                lastShot = t;
+            }
+
+            // 5. Bullets
+            ctx.fillStyle = '#10b981';
+            bullets.forEach((b, i) => {
+                b.y -= 10;
+                ctx.fillRect(b.x, b.y, b.w, b.h);
+                if(b.y < -20) bullets.splice(i, 1);
+            });
+
+            // 6. Enemies & Collision
+            ctx.fillStyle = '#ef4444';
+            enemies.forEach((en, i) => {
+                en.y += en.speed;
+                
+                // Draw Diamond Enemy
+                ctx.beginPath();
+                ctx.moveTo(en.x + en.w/2, en.y);
+                ctx.lineTo(en.x + en.w, en.y + en.h/2);
+                ctx.lineTo(en.x + en.w/2, en.y + en.h);
+                ctx.lineTo(en.x, en.y + en.h/2);
+                ctx.fill();
+
+                // Game Over Condition
+                if(en.y > 800) { 
+                    gameActive = false; 
+                    const finalScore = score;
+                    const hs = localStorage.getItem('galacticHS') || 0;
+                    if(finalScore > hs) localStorage.setItem('galacticHS', finalScore);
+                    alert("GAME OVER! Score: " + finalScore); 
+                    location.reload(); 
+                }
+
+                // Collision Detection
+                bullets.forEach((b, bi) => {
+                    if(b.x < en.x + en.w && b.x + b.w > en.x && b.y < en.y + en.h && b.y + b.h > en.y) {
+                        enemies.splice(i, 1);
+                        bullets.splice(bi, 1);
+                        score += 10;
+                        scoreEl.innerText = score;
+                    }
+                });
+            });
+
+            requestAnimationFrame(draw);
+        }
+    </script>
+</body>
+</html>
