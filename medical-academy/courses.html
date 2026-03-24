@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Courses | MedAcademy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #007BFF;
+            --secondary: #2C3E50;
+            --white: #ffffff;
+            --bg-light: #F8FAFC;
+            --text-main: #333;
+            --text-muted: #666;
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-light); color: var(--text-main); }
+
+        /* Reuse Navbar Styles from Homepage */
+        .navbar { background: var(--white); padding: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .logo { font-size: 24px; font-weight: 700; text-decoration: none; color: var(--secondary); }
+        .logo span { color: var(--primary); }
+        .nav-links a { text-decoration: none; color: var(--secondary); margin-left: 25px; font-weight: 500; }
+
+        /* Courses Header */
+        .page-header { background: var(--secondary); color: white; padding: 60px 0; text-align: center; }
+        .page-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        
+        /* Search & Filter Bar */
+        .filter-section { padding: 30px 0; background: var(--white); border-bottom: 1px solid #eee; }
+        .filter-container { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .search-box { flex: 1; min-width: 300px; }
+        .search-box input { width: 100%; padding: 12px 20px; border-radius: 30px; border: 1px solid #ddd; outline: none; }
+
+        /* Courses Grid */
+        .courses-grid-page { padding: 60px 0; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
+
+        .course-card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: var(--transition); border: 1px solid #eee; }
+        .course-card:hover { transform: translateY(-10px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
+        
+        .card-img { height: 200px; background: #e2e8f0; position: relative; }
+        .badge { position: absolute; top: 15px; left: 15px; background: var(--primary); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        
+        .card-content { padding: 25px; }
+        .card-content h3 { font-size: 1.25rem; margin-bottom: 10px; color: var(--secondary); }
+        .card-content p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; }
+        
+        .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 15px; }
+        .price { font-weight: 700; color: var(--primary); font-size: 1.1rem; }
+        .btn-view { text-decoration: none; color: var(--secondary); font-weight: 600; font-size: 0.9rem; transition: var(--primary); }
+        .btn-view:hover { color: var(--primary); }
+
+        @media (max-width: 768px) { .filter-container { flex-direction: column; } }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Med<span>Academy</span></a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="courses.html" style="color: var(--primary);">Courses</a>
+                <a href="dashboard.html">My Account</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>Medical Course Library</h1>
+            <p>Expert-led modules for every stage of your medical career.</p>
+        </div>
+    </section>
+
+    <section class="filter-section">
+        <div class="container filter-container">
+            <div class="search-box">
+                <input type="text" id="courseSearch" placeholder="Search by topic (e.g., Surgery, Anatomy)...">
+            </div>
+            <div class="category-filters">
+                </div>
+        </div>
+    </section>
+
+    <main class="courses-grid-page">
+        <div class="container grid" id="coursesGrid">
+            <div class="course-card">
+                <div class="card-img"><span class="badge">Anatomy</span></div>
+                <div class="card-content">
+                    <h3>Clinical Human Anatomy</h3>
+                    <p>Comprehensive review of musculoskeletal and neurovascular systems.</p>
+                    <div class="card-footer">
+                        <span class="price">$49.00</span>
+                        <a href="course-details.html" class="btn-view">Details →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course-card">
+                <div class="card-img"><span class="badge">Pharmacology</span></div>
+                <div class="card-content">
+                    <h3>Advanced Pharmacology</h3>
+                    <p>Master drug classes, interactions, and clinical contraindications.</p>
+                    <div class="card-footer">
+                        <span class="price">Free</span>
+                        <a href="course-details.html" class="btn-view">Details →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="course-card">
+                <div class="card-img"><span class="badge">Surgery</span></div>
+                <div class="card-content">
+                    <h3>Surgical Fundamentals</h3>
+                    <p>Introduction to aseptic techniques and basic operative procedures.</p>
+                    <div class="card-footer">
+                        <span class="price">$89.00</span>
+                        <a href="course-details.html" class="btn-view">Details →</a>
+                    </div>
+                </div>
+            </div>
+            
+            </div>
+    </main>
+
+    <script>
+        // Simple search filter logic
+        const searchInput = document.getElementById('courseSearch');
+        const cards = document.querySelectorAll('.course-card');
+
+        searchInput.addEventListener('keyup', (e) => {
+            const term = e.target.value.toLowerCase();
+            cards.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                if(title.includes(term)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

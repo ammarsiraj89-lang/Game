@@ -1,0 +1,707 @@
+/* Root Variables for Consistency */
+:root {
+    --primary-color: #007BFF;    /* Trust Blue */
+    --secondary-color: #2C3E50;  /* Professional Navy */
+    --accent-color: #2ECC71;     /* Success Green */
+    --text-main: #333;
+    --text-light: #666;
+    --bg-light: #F8FAFC;
+    --white: #ffffff;
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: var(--text-main);
+    background-color: var(--bg-light);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Navbar Styling */
+.navbar {
+    background: var(--white);
+    padding: 20px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--secondary-color);
+}
+
+.logo span {
+    color: var(--primary-color);
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--secondary-color);
+    margin-left: 25px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: var(--primary-color);
+}
+
+/* Button Component Styles */
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 12px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+}
+/* Hero Section Styling */
+.hero {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #ffffff 0%, #eef5ff 100%);
+    overflow: hidden;
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 50px;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--secondary-color);
+}
+
+.hero-content h1 span {
+    color: var(--primary-color);
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-bottom: 30px;
+    max-width: 500px;
+}
+
+.hero-btns .btn-secondary {
+    margin-left: 15px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    border: 2px solid var(--primary-color);
+    padding: 10px 25px;
+    border-radius: 5px;
+    transition: var(--transition);
+}
+
+.hero-btns .btn-secondary:hover {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+.hero-image img {
+    width: 100%;
+    border-radius: 20px;
+    /* Optional: add a soft shadow to the doctor's photo */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* Responsive adjustments for Hero */
+@media (max-width: 768px) {
+    .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
+    .hero-content p {
+        margin: 0 auto 30px;
+    }
+}
+/* Mobile Menu Styles */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 80px;
+        left: -100%; /* Hidden by default */
+        width: 100%;
+        height: calc(100vh - 80px);
+        background: var(--white);
+        flex-direction: column;
+        align-items: center;
+        padding-top: 50px;
+        transition: var(--transition);
+        display: flex; /* Override hidden */
+    }
+
+    .nav-links.active {
+        left: 0; /* Slide in */
+    }
+
+    .nav-links a {
+        margin: 15px 0;
+        font-size: 1.2rem;
+    }
+}
+
+/* Hide toggle on desktop */
+@media (min-width: 769px) {
+    .menu-toggle {
+        display: none;
+    }
+}
+
+/* step2*/
+
+/* Courses Section Styling */
+.courses-featured {
+    padding: 80px 0;
+    background-color: var(--white);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+}
+
+.section-header h2 span {
+    color: var(--primary-color);
+}
+
+/* Grid Layout */
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+/* Individual Card Styling */
+.course-card {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: var(--transition);
+    border: 1px solid #eee;
+}
+
+.course-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.course-image {
+    position: relative;
+    height: 200px;
+}
+
+.course-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.category {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.course-info {
+    padding: 20px;
+}
+
+.course-info h3 {
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+    color: var(--secondary-color);
+}
+
+.course-info p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 20px;
+}
+
+.course-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.price {
+    color: var(--accent-color);
+}
+
+.btn-card {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-card:hover {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+/*Step 3*/
+
+/* Testimonials Styling */
+.testimonials {
+    padding: 80px 0;
+    background-color: #f1f7ff;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.testimonial-card {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.testimonial-card p {
+    font-style: italic;
+    color: var(--text-light);
+    margin-bottom: 25px;
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.student-info img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.student-info h4 {
+    color: var(--secondary-color);
+    font-size: 1rem;
+}
+
+.student-info span {
+    font-size: 0.8rem;
+    color: var(--primary-color);
+}
+
+/* Footer Styling */
+.footer {
+    background: var(--secondary-color);
+    color: var(--white);
+    padding: 70px 0 20px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 50px;
+    margin-bottom: 50px;
+}
+
+.footer-about p {
+    margin-top: 20px;
+    color: #ccc;
+    max-width: 300px;
+}
+
+.footer h4 {
+    margin-bottom: 25px;
+    font-size: 1.2rem;
+}
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links ul li {
+    margin-bottom: 12px;
+}
+
+.footer-links ul li a {
+    color: #ccc;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.footer-links ul li a:hover {
+    color: var(--primary-color);
+    padding-left: 5px;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    color: #888;
+    font-size: 0.9rem;
+}
+
+/* Footer Responsive */
+@media (max-width: 768px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .footer-about p {
+        margin: 20px auto;
+    }
+}
+
+
+/* COURSE DETAILS*/
+
+
+/* Course Detail Specifics */
+.course-header {
+    background: var(--secondary-color);
+    color: var(--white);
+    padding: 60px 0;
+}
+
+.breadcrumb {
+    font-size: 0.8rem;
+    color: #bbb;
+    margin-bottom: 10px;
+}
+
+.course-grid-detail {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    padding: 60px 0;
+}
+
+.video-preview {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.video-preview img {
+    width: 100%;
+    display: block;
+}
+
+.play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--primary-color);
+    color: var(--white);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Sidebar Box */
+.price-box {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 100px;
+}
+
+.price-tag {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.full-width {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+}
+
+.course-features {
+    list-style: none;
+    margin-top: 25px;
+}
+
+.course-features li {
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    color: var(--text-light);
+}
+
+/* Responsive Course Detail */
+@media (max-width: 992px) {
+    .course-grid-detail {
+        grid-template-columns: 1fr;
+    }
+    .course-sidebar {
+        order: -1; /* Move price box to top on mobile */
+    }
+}
+
+/*LOGIN*/
+
+/* Auth Pages Styling */
+.auth-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 20px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.auth-card {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.auth-card h2 {
+    margin-bottom: 10px;
+    color: var(--secondary-color);
+}
+
+.auth-form {
+    text-align: left;
+    margin-top: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--secondary-color);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.form-group input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+.error-msg {
+    color: #e74c3c;
+    font-size: 0.8rem;
+    display: none; /* Hidden by default */
+    margin-top: 5px;
+}
+
+.auth-switch {
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.auth-switch a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+.top-nav {
+    padding: 20px;
+}
+
+.btn-secondary {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #bbb;
+    color: #000;
+}
+
+
+
+
+/* Video Learning Page Styling */
+
+.video-learning-container {
+    padding: 40px 0;
+    background: #1a1a1a; /* Dark theme for focus */
+    color: #fff;
+    min-height: 100vh;
+}
+
+.lesson-grid {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 30px;
+}
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #000;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.video-details {
+    margin-top: 25px;
+    background: #222;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.video-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+/* Sidebar Playlist Styling */
+.lesson-sidebar {
+    background: #222;
+    border-radius: 10px;
+    padding: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.playlist-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-bottom: 10px;
+}
+
+.playlist-item:hover {
+    background: #333;
+}
+
+.playlist-item.active {
+    background: var(--primary-color);
+}
+
+.item-info h4 {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.item-info span {
+    font-size: 0.8rem;
+    color: #bbb;
+}
+
+/* Responsive Video Page */
+@media (max-width: 992px) {
+    .lesson-grid {
+        grid-template-columns: 1fr;
+    }
+}

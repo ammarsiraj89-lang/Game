@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Center | MedAcademy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #007BFF;
+            --dark-bg: #121212;
+            --card-bg: #1E1E1E;
+            --text-gray: #B0B0B0;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: var(--dark-bg); color: var(--white); }
+
+        /* Navigation */
+        .nav-mini {
+            padding: 15px 30px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-btn { color: var(--white); text-decoration: none; font-size: 0.9rem; }
+
+        /* Main Layout */
+        .video-container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            height: calc(100vh - 60px);
+        }
+
+        /* Video Area */
+        .video-main {
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .video-player-box {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .video-player-box iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        .video-info { margin-top: 25px; }
+        .video-info h1 { font-size: 1.8rem; margin-bottom: 10px; }
+        .video-info p { color: var(--text-gray); line-height: 1.6; }
+
+        .action-bar {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 15px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { background: transparent; border: 1px solid #444; color: white; }
+
+        /* Sidebar Playlist */
+        .playlist-sidebar {
+            background: var(--card-bg);
+            border-left: 1px solid #333;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .playlist-sidebar h3 { margin-bottom: 20px; font-size: 1.1rem; }
+
+        .lesson-item {
+            display: flex;
+            gap: 12px;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: rgba(255,255,255,0.03);
+        }
+        .lesson-item:hover { background: rgba(255,255,255,0.08); }
+        .lesson-item.active { background: rgba(0,123,255,0.2); border-left: 4px solid var(--primary); }
+
+        .lesson-num { color: var(--primary); font-weight: 700; }
+        .lesson-title { font-size: 0.85rem; }
+        .lesson-time { font-size: 0.75rem; color: var(--text-gray); display: block; margin-top: 4px; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .video-container { grid-template-columns: 1fr; height: auto; }
+            .playlist-sidebar { height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-mini">
+        <a href="index.html" class="back-btn">← Back to Course</a>
+        <div class="user-status">Dr. Faisal Ahmed (Instructor)</div>
+    </nav>
+
+    <div class="video-container">
+        <main class="video-main">
+            <div class="video-player-box">
+                <iframe id="mainVideo" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+            </div>
+            
+            <div class="video-info">
+                <h1 id="videoTitle">01. Introduction to Clinical Anatomy</h1>
+                <p id="videoDesc">This session covers the basic planes, directions, and terminology used in clinical settings. Essential for 1st-year medical students.</p>
+                
+                <div class="action-bar">
+                    <button class="btn btn-primary">Mark as Complete</button>
+                    <button class="btn btn-outline">Resources (PDF)</button>
+                </div>
+            </div>
+        </main>
+
+        <aside class="playlist-sidebar">
+            <h3>Course Content</h3>
+            
+            <div class="lesson-item active" data-video="dQw4w9WgXcQ" data-title="01. Introduction to Clinical Anatomy">
+                <span class="lesson-num">01</span>
+                <div class="lesson-info">
+                    <span class="lesson-title">Intro to Clinical Anatomy</span>
+                    <span class="lesson-time">15:30</span>
+                </div>
+            </div>
+
+            <div class="lesson-item" data-video="77X8G68-vO0" data-title="02. The Thoracic Wall">
+                <span class="lesson-num">02</span>
+                <div class="lesson-info">
+                    <span class="lesson-title">The Thoracic Wall & Cavity</span>
+                    <span class="lesson-time">22:15</span>
+                </div>
+            </div>
+
+            <div class="lesson-item" data-video="fN1Cyr0ZK9M" data-title="03. Cardiovascular Foundations">
+                <span class="lesson-num">03</span>
+                <div class="lesson-info">
+                    <span class="lesson-title">Cardiovascular Foundations</span>
+                    <span class="lesson-time">18:45</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        const lessons = document.querySelectorAll('.lesson-item');
+        const iframe = document.getElementById('mainVideo');
+        const title = document.getElementById('videoTitle');
+
+        lessons.forEach(lesson => {
+            lesson.addEventListener('click', () => {
+                // Remove active class from all
+                lessons.forEach(l => l.classList.remove('active'));
+                
+                // Add to clicked
+                lesson.classList.add('active');
+                
+                // Update Video
+                const videoId = lesson.getAttribute('data-video');
+                const videoTitle = lesson.getAttribute('data-title');
+                
+                iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                title.innerText = videoTitle;
+                
+                // Smooth scroll to top for mobile users
+                if(window.innerWidth < 1024) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
