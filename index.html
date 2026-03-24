@@ -3,30 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Galactic Fighter - Final Pro</title>
+    <title>Galactic Fighter - Endless War</title>
     <style>
         * { box-sizing: border-box; touch-action: none; user-select: none; }
         body { margin: 0; background: #020617; display: flex; justify-content: center; align-items: center; height: 100vh; color: #f8fafc; font-family: sans-serif; overflow: hidden; }
-        
-        /* The specific game area */
-        #game-container { 
-            position: relative; 
-            width: 100%; 
-            max-width: 450px; 
-            height: 100vh; 
-            background: #000; 
-            overflow: hidden; 
-            border: 2px solid #1e293b;
-            cursor: crosshair;
-        }
+        #game-container { position: relative; width: 100%; max-width: 450px; height: 100vh; background: #000; overflow: hidden; border: 2px solid #1e293b; }
         canvas { width: 100%; height: 100%; display: block; }
-        
         #menu { position: absolute; inset: 0; background: #020617; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; gap: 15px; }
         .btn { padding: 12px 30px; font-size: 16px; cursor: pointer; background: #3b82f6; border: none; color: white; border-radius: 8px; width: 200px; font-weight: bold; }
-        
         .ui { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; pointer-events: none; z-index: 50; }
         .stat { background: rgba(15, 23, 42, 0.9); padding: 6px 12px; border-radius: 5px; border: 1px solid #334155; pointer-events: auto; }
-        .mini-btn { background: #475569; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+        #boss-ui { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); width: 80%; display: none; text-align: center; }
+        .hp-bar { width: 100%; height: 10px; background: #450a0a; border-radius: 5px; overflow: hidden; border: 1px solid #f43f5e; }
+        #hp-fill { width: 100%; height: 100%; background: #f43f5e; transition: width 0.1s; }
     </style>
 </head>
 <body>
@@ -36,16 +25,18 @@
             <h1 style="color:#3b82f6; margin:0;">GALACTIC FIGHTER</h1>
             <p id="hs-display" style="color:#94a3b8;">Best: 0</p>
             <button class="btn" onclick="startGame(1)">START EASY</button>
-            <button class="btn" onclick="startGame(1.8)">START MEDIUM</button>
-            <button class="btn" onclick="startGame(2.5)">START HARD</button>
+            <button class="btn" onclick="startGame(1.3)">START MEDIUM</button>
+            <button class="btn" onclick="startGame(1.8)">START HARD</button>
         </div>
 
         <div class="ui">
             <div class="stat">Score: <span id="score">0</span></div>
-            <div style="display:flex; gap:5px; pointer-events:auto;">
-                <button id="pause-btn" class="mini-btn" onclick="togglePause()" style="background:#f59e0b">PAUSE</button>
-                <button class="mini-btn" onclick="location.reload()">HOME</button>
-            </div>
+            <button onclick="location.reload()" style="pointer-events: auto; background: #475569; color: white; border: none; padding: 8px 12px; border-radius: 4px;">HOME</button>
+        </div>
+
+        <div id="boss-ui">
+            <div style="color:#f43f5e; font-size: 12px; font-weight: bold; margin-bottom: 4px;">BOSS INCOMING</div>
+            <div class="hp-bar"><div id="hp-fill"></div></div>
         </div>
 
         <canvas id="gameCanvas"></canvas>
@@ -56,160 +47,153 @@
         const ctx = canvas.getContext('2d');
         const container = document.getElementById('game-container');
         const scoreEl = document.getElementById('score');
-        const menu = document.getElementById('menu');
+        const hpFill = document.getElementById('hp-fill');
+        const bossUI = document.getElementById('boss-ui');
 
-        canvas.width = 450;
-        canvas.height = 800;
+        canvas.width = 450; canvas.height = 800;
 
-        let score = 0, gameActive = false, isPaused = false, diff = 1;
-        let player = { x: 200, y: 700, w: 40, h: 40 };
-        let bullets = [], enemies = [], stars = [];
-        let spawnTimer = null;
+        let score = 0, gameActive = false, diff = 1, bossLevel = 1;
+        let player = { x: 200, y: 700, w: 40, h: 40, tripleTime: 0, hasShield: false };
+        let bullets = [], enemies = [], items = [];
+        let boss = null, spawnTimer = null;
 
-        // --- AUDIO ENGINE ---
         let audioCtx = null;
-        let bgmOsc = null;
-
-        function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playSfx(f, t, d, v=0.05) {
+            if (!audioCtx) return;
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.type = t; o.frequency.setValueAtTime(f, audioCtx.currentTime);
+            g.gain.setValueAtTime(v, audioCtx.currentTime); g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime+d);
+            o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+d);
         }
-
-        function playBGM() {
-            if (bgmOsc) return;
-            bgmOsc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            bgmOsc.type = 'triangle';
-            bgmOsc.frequency.setValueAtTime(60, audioCtx.currentTime); // Low space hum
-            gain.gain.setValueAtTime(0.03, audioCtx.currentTime); // Very quiet
-            bgmOsc.connect(gain);
-            gain.connect(audioCtx.destination);
-            bgmOsc.start();
-        }
-
-        function playSound(freq, type, duration, vol=0.1) {
-            if (!audioCtx || isPaused) return;
-            const osc = audioCtx.createOscillator();
-            const g = audioCtx.createGain();
-            osc.type = type;
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(freq/2, audioCtx.currentTime + duration);
-            g.gain.setValueAtTime(vol, audioCtx.currentTime);
-            g.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            osc.connect(g); g.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + duration);
-        }
-
-        // --- INPUT: FIXED TO CONTAINER AREA ---
-        function handleInput(e) {
-            if(!gameActive || isPaused) return;
-            
-            // This calculates the position relative ONLY to the game-container
-            const rect = container.getBoundingClientRect();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            
-            // Check if touch/mouse is inside the horizontal bounds of the game
-            if (clientX >= rect.left && clientX <= rect.right) {
-                const relativeX = clientX - rect.left;
-                const scaleX = canvas.width / rect.width;
-                player.x = (relativeX * scaleX) - player.w / 2;
-                
-                // Boundary Lock
-                if (player.x < 0) player.x = 0;
-                if (player.x > canvas.width - player.w) player.x = canvas.width - player.w;
-            }
-        }
-
-        container.addEventListener('mousemove', handleInput);
-        container.addEventListener('touchmove', (e) => {
-            if(gameActive) e.preventDefault();
-            handleInput(e);
-        }, {passive: false});
-
-        // --- GAMEPLAY ---
-        document.getElementById('hs-display').innerText = "Best: " + (localStorage.getItem('galacticHS') || 0);
-        for(let i=0; i<40; i++) stars.push({x: Math.random()*450, y: Math.random()*800, s: Math.random()*2+1});
 
         function startGame(d) {
-            initAudio();
-            playBGM();
-            diff = d;
-            menu.style.display = 'none';
-            gameActive = true; isPaused = false; score = 0;
-            bullets = []; enemies = [];
-            spawnEnemy();
-            requestAnimationFrame(draw);
-        }
-
-        function togglePause() {
-            if (!gameActive) return;
-            isPaused = !isPaused;
-            document.getElementById('pause-btn').innerText = isPaused ? "RESUME" : "PAUSE";
-            if (!isPaused) { spawnEnemy(); requestAnimationFrame(draw); }
-            else { clearTimeout(spawnTimer); }
+            initAudio(); diff = d; bossLevel = 1;
+            document.getElementById('menu').style.display = 'none';
+            gameActive = true; score = 0; scoreEl.innerText = "0";
+            bullets = []; enemies = []; items = []; boss = null;
+            spawnEnemy(); requestAnimationFrame(draw);
         }
 
         function spawnEnemy() {
-            if(!gameActive || isPaused) return;
-            enemies.push({ x: Math.random()*400, y: -50, w: 40, h: 40, speed: (2.5 + Math.random()) * diff });
-            spawnTimer = setTimeout(spawnEnemy, 1000 / diff);
+            if(!gameActive || boss) return; // Stop spawning while boss is alive
+            
+            enemies.push({ 
+                x: Math.random()*400, 
+                y: -50, 
+                w: 40, 
+                h: 30, 
+                speed: (1.2 + Math.random() + (bossLevel * 0.15)) * diff 
+            });
+            
+            if(Math.random() > 0.9) {
+                const type = Math.random() > 0.5 ? 'triple' : 'shield';
+                items.push({x: Math.random()*400, y: -50, w: 25, h: 25, type: type});
+            }
+            spawnTimer = setTimeout(spawnEnemy, 1100 / diff);
         }
+
+        function spawnBoss() {
+            clearTimeout(spawnTimer); // Stop normal enemies
+            const hp = 10 + (bossLevel * 5);
+            boss = { x: 175, y: -120, targetY: 100, w: 120, h: 70, hp: hp, maxHp: hp, dir: 1 };
+            bossUI.style.display = 'block';
+            hpFill.style.width = '100%';
+            playSfx(80, 'sawtooth', 0.6, 0.1);
+        }
+
+        function handleInput(e) {
+            const rect = container.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            player.x = ((clientX - rect.left) * (canvas.width / rect.width)) - player.w/2;
+            player.x = Math.max(0, Math.min(canvas.width - player.w, player.x));
+        }
+        container.addEventListener('mousemove', handleInput);
+        container.addEventListener('touchmove', (e) => { e.preventDefault(); handleInput(e); }, {passive: false});
 
         let lastShot = 0;
         function draw(t) {
-            if(!gameActive || isPaused) return;
+            if(!gameActive) return;
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const isTriple = player.tripleTime > t;
 
-            // Stars
-            ctx.fillStyle = '#1e293b';
-            stars.forEach(s => { s.y += s.s; if(s.y > 800) s.y = 0; ctx.fillRect(s.x, s.y, 2, 2); });
-
-            // Player
-            ctx.fillStyle = '#3b82f6';
-            ctx.beginPath();
-            ctx.moveTo(player.x+20, player.y); ctx.lineTo(player.x, player.y+40); ctx.lineTo(player.x+40, player.y+40);
-            ctx.fill();
-
-            // Auto-Shoot
             if(t - lastShot > 250) {
-                bullets.push({x: player.x+18, y: player.y, w: 4, h: 15});
-                playSound(500, 'sine', 0.08, 0.04);
-                lastShot = t;
+                if(isTriple) {
+                    bullets.push({x: player.x+18, y: player.y, w: 4, h: 15, vx: 0});
+                    bullets.push({x: player.x+18, y: player.y, w: 4, h: 15, vx: -2});
+                    bullets.push({x: player.x+18, y: player.y, w: 4, h: 15, vx: 2});
+                } else { bullets.push({x: player.x+18, y: player.y, w: 4, h: 15, vx: 0}); }
+                playSfx(600, 'sine', 0.05); lastShot = t;
             }
 
-            // Update Bullets
-            ctx.fillStyle = '#10b981';
+            ctx.fillStyle = isTriple ? '#fbbf24' : '#10b981';
             bullets.forEach((b, i) => {
-                b.y -= 12; ctx.fillRect(b.x, b.y, b.w, b.h);
+                b.y -= 12; b.x += (b.vx || 0);
+                ctx.fillRect(b.x, b.y, b.w, b.h);
                 if(b.y < -20) bullets.splice(i, 1);
             });
 
-            // Update Enemies
-            ctx.fillStyle = '#f43f5e';
+            items.forEach((it, i) => {
+                it.y += 2.5;
+                ctx.fillStyle = it.type === 'triple' ? '#fbbf24' : '#3b82f6';
+                ctx.beginPath(); ctx.arc(it.x+12, it.y+12, 12, 0, Math.PI*2); ctx.fill();
+                if(player.x < it.x+it.w && player.x+player.w > it.x && player.y < it.y+it.h && player.y+player.h > it.y) {
+                    if(it.type === 'triple') player.tripleTime = t + 8000;
+                    else player.hasShield = true;
+                    items.splice(i, 1); playSfx(800, 'sine', 0.2, 0.1);
+                }
+            });
+
+            if(boss) {
+                if(boss.y < boss.targetY) boss.y += 1.5;
+                else {
+                    boss.x += (1.5 + bossLevel * 0.3) * boss.dir;
+                    if(boss.x > canvas.width - boss.w || boss.x < 0) boss.dir *= -1;
+                }
+                ctx.fillStyle = '#f43f5e';
+                ctx.fillRect(boss.x + 20, boss.y, boss.w - 40, boss.h);
+                ctx.fillRect(boss.x, boss.y + 20, boss.w, 20); 
+                bullets.forEach((b, bi) => {
+                    if(b.x < boss.x+boss.w && b.x+b.w > boss.x && b.y < boss.y+boss.h && b.y+b.h > boss.y) {
+                        boss.hp--; bullets.splice(bi, 1); playSfx(150, 'square', 0.05);
+                        hpFill.style.width = (boss.hp / boss.maxHp * 100) + '%';
+                        if(boss.hp <= 0) {
+                            score += 250; scoreEl.innerText = score;
+                            boss = null; bossUI.style.display = 'none';
+                            bossLevel++;
+                            playSfx(50, 'sawtooth', 0.5, 0.1);
+                            spawnEnemy(); // Re-trigger normal enemies immediately
+                        }
+                    }
+                });
+            }
+
             enemies.forEach((en, i) => {
                 en.y += en.speed;
-                ctx.beginPath();
-                ctx.moveTo(en.x+20, en.y); ctx.lineTo(en.x+40, en.y+20); ctx.lineTo(en.x+20, en.y+40); ctx.lineTo(en.x, en.y+20);
-                ctx.fill();
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(en.x, en.y, en.w, en.h);
 
-                if(en.y > 800) { 
-                    gameActive = false;
-                    const hs = localStorage.getItem('galacticHS') || 0;
-                    if(score > hs) localStorage.setItem('galacticHS', score);
-                    alert("MISSION OVER! Score: " + score);
-                    location.reload();
+                if(player.x < en.x+en.w && player.x+player.w > en.x && player.y < en.y+en.h && player.y+player.h > en.y) {
+                    if(player.hasShield) { player.hasShield = false; enemies.splice(i, 1); playSfx(200, 'sawtooth', 0.3, 0.1); }
+                    else { gameActive = false; alert("Over! Score: " + score); location.reload(); }
                 }
+                if(en.y > 800) { gameActive = false; alert("Invasion! Score: " + score); location.reload(); }
 
                 bullets.forEach((b, bi) => {
-                    if(b.x < en.x+40 && b.x+4 > en.x && b.y < en.y+40 && b.y+15 > en.y) {
-                        playSound(100, 'square', 0.15, 0.08);
-                        enemies.splice(i, 1); bullets.splice(bi, 1);
-                        score += 10; scoreEl.innerText = score;
+                    if(b.x < en.x+en.w && b.x+b.w > en.x && b.y < en.y+en.h && b.y+b.h > en.y) {
+                        enemies.splice(i, 1); bullets.splice(bi, 1); score += 10; scoreEl.innerText = score;
+                        if(score > 0 && score % 250 === 0 && !boss) spawnBoss();
                     }
                 });
             });
+
+            if(player.hasShield) {
+                ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.arc(player.x+20, player.y+20, 35, 0, Math.PI*2); ctx.stroke();
+            }
+            ctx.fillStyle = '#3b82f6';
+            ctx.beginPath(); ctx.moveTo(player.x+20, player.y); ctx.lineTo(player.x, player.y+40); ctx.lineTo(player.x+40, player.y+40); ctx.fill();
 
             requestAnimationFrame(draw);
         }

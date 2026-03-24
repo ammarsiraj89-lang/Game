@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50" x-data="{ 
+    search: '', 
+    items: [
+        { t: 'Heart Health', d: 'Understanding blood pressure and cholesterol.', cat: 'Cardiology' },
+        { t: 'Diabetes Basics', d: 'Managing blood sugar and insulin levels.', cat: 'Endocrinology' },
+        { t: 'Mental Health', d: 'Tips for managing stress and anxiety.', cat: 'Psychology' },
+        { t: 'Skin Protection', d: 'Preventing melanoma and UV damage.', cat: 'Dermatology' }
+    ] 
+}">
+    <nav class="bg-white border-b p-4 px-6 flex justify-between items-center">
+        <a href="doctor.html" class="font-bold text-teal-600">← MedCurate Hub</a>
+        <div class="flex gap-4 text-sm font-semibold">
+            <a href="awareness.html" class="text-teal-600 underline">Awareness</a>
+            <a href="clinical.html">Clinical</a>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto py-12 px-6">
+        <h2 class="text-3xl font-extrabold mb-4">Patient Awareness Library</h2>
+        
+        <div class="relative mb-10">
+            <input x-model="search" type="text" placeholder="Search conditions (e.g. Heart)..." 
+                   class="w-full p-5 rounded-2xl border border-slate-200 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none">
+            <div class="absolute right-5 top-5 text-slate-400">🔍</div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <template x-for="item in items" :key="item.t">
+                <div x-show="item.t.toLowerCase().includes(search.toLowerCase())" 
+                     x-transition:enter="transition ease-out duration-300"
+                     class="bg-white p-8 rounded-3xl border border-slate-100 hover:shadow-xl transition-all">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-teal-600" x-text="item.cat"></span>
+                    <h3 class="text-xl font-bold mt-2 mb-2" x-text="item.t"></h3>
+                    <p class="text-slate-600 text-sm mb-4" x-text="item.d"></p>
+                    <button class="text-sm font-bold text-slate-800">Learn More →</button>
+                </div>
+            </template>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kids Learning Game</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: linear-gradient(to right, #ffecd2, #fcb69f);
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .letters {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin: 20px;
+    }
+
+    .letter-btn {
+      padding: 15px;
+      font-size: 20px;
+      background: #6a5acd;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .letter-btn:hover {
+      background: #5a4acb;
+    }
+
+    .display {
+      font-size: 30px;
+      margin: 20px;
+      color: #444;
+    }
+
+    .quiz-box {
+      margin-top: 20px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #ff7f50;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ff5722;
+    }
+
+    .score {
+      font-size: 18px;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎓 Kids Learning Game</h1>
+
+<div class="letters" id="letters"></div>
+
+<div class="display" id="display">Click a letter!</div>
+
+<button onclick="speak()">🔊 Speak</button>
+
+<hr>
+
+<h2>🧠 Quiz Mode</h2>
+
+<div class="quiz-box">
+  <div id="question">Guess the word</div>
+  <input type="text" id="answer" placeholder="Your answer">
+  <br>
+  <button onclick="checkQuiz()">Submit</button>
+  <button onclick="nextQuiz()">Next</button>
+  <div class="score">Score: <span id="score">0</span></div>
+</div>
+
+<script>
+  const data = {
+    A: ["Apple", "🍎"],
+    B: ["Ball", "⚽"],
+    C: ["Cat", "🐱"],
+    D: ["Dog", "🐶"],
+    E: ["Elephant", "🐘"],
+    F: ["Fish", "🐟"],
+    G: ["Grapes", "🍇"],
+    H: ["Hat", "🎩"],
+    I: ["Ice Cream", "🍨"],
+    J: ["Juice", "🧃"],
+    K: ["Kite", "🪁"],
+    L: ["Lion", "🦁"],
+    M: ["Mango", "🥭"],
+    N: ["Nest", "🪺"],
+    O: ["Orange", "🍊"],
+    P: ["Parrot", "🦜"],
+    Q: ["Queen", "👑"],
+    R: ["Rabbit", "🐰"],
+    S: ["Sun", "☀️"],
+    T: ["Tiger", "🐯"],
+    U: ["Umbrella", "☂️"],
+    V: ["Van", "🚐"],
+    W: ["Watch", "⌚"],
+    X: ["Xylophone", "🎼"],
+    Y: ["Yak", "🐂"],
+    Z: ["Zebra", "🦓"]
+  };
+
+  let currentText = "";
+  let quizWord = "";
+  let score = 0;
+
+  // Create A-Z buttons
+  const lettersDiv = document.getElementById("letters");
+  Object.keys(data).forEach(letter => {
+    const btn = document.createElement("button");
+    btn.innerText = letter;
+    btn.className = "letter-btn";
+    btn.onclick = () => showWord(letter);
+    lettersDiv.appendChild(btn);
+  });
+
+  function showWord(letter) {
+  const [word, emoji] = data[letter];
+  currentText = word;
+
+  document.getElementById("display").innerText = letter + " → " + word + " " + emoji;
+
+  // 🔊 Play click sound
+  let clickSound = new Audio("click.mp3");
+  clickSound.play();
+
+  // 🔊 Speak automatically
+  speakWord(word);
+}
+function speakWord(word) {
+  const speech = new SpeechSynthesisUtterance(word);
+  speech.lang = "en-IN"; // Indian accent
+  speech.rate = 0.9; // slower for kids
+  speech.pitch = 1.2; // fun voice
+  speechSynthesis.speak(speech);
+}
+// correct answer sound
+let correctSound = new Audio("correct.mp3");
+
+// wrong answer sound
+let wrongSound = new Audio("wrong.mp3");
+if (user === quizWord.toLowerCase()) {
+  correctSound.play();
+} else {
+  wrongSound.play();
+}
+
+  function speak() {
+    const speech = new SpeechSynthesisUtterance(currentText);
+    speechSynthesis.speak(speech);
+  }
+
+  // Quiz Mode
+  function nextQuiz() {
+    const keys = Object.keys(data);
+    const randomLetter = keys[Math.floor(Math.random() * keys.length)];
+    quizWord = data[randomLetter][0];
+    document.getElementById("question").innerText = "Guess: " + data[randomLetter][1];
+    document.getElementById("answer").value = "";
+  }
+
+  function checkQuiz() {
+    const user = document.getElementById("answer").value.toLowerCase();
+    if (user === quizWord.toLowerCase()) {
+      score++;
+      document.getElementById("score").innerText = score;
+      alert("✅ Correct!");
+      nextQuiz();
+    } else {
+      alert("❌ Try again!");
+    }
+  }
+
+  nextQuiz();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedCurate | Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50" x-data="{ role: 'patient' }">
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center text-white font-bold">M</div>
+                <span class="text-xl font-bold text-slate-800">MedCurate</span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-bold text-slate-600">
+                <a href="index.html" class="text-teal-600">Home</a>
+                <a href="awareness.html" class="hover:text-teal-600">Awareness</a>
+                <a href="clinical.html" class="hover:text-teal-600">Clinical</a>
+                <a href="about.html" class="hover:text-teal-600">About</a>
+            </div>
+            <button @click="role = (role === 'patient' ? 'doctor' : 'patient')" 
+                    class="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold">
+                Switch to <span x-text="role === 'patient' ? 'Doctor' : 'Patient'"></span> View
+            </button>
+        </div>
+    </nav>
+
+    <header class="max-w-4xl mx-auto px-6 py-20 text-center">
+        <h1 class="text-5xl font-extrabold mb-6">Medical Education <span class="text-teal-600">Reimagined.</span></h1>
+        <p class="text-lg text-slate-600 mb-8">Access live medical news and verified educational resources tailored to your expertise.</p>
+        <div class="flex justify-center gap-4">
+            <a href="awareness.html" class="bg-teal-600 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-teal-200">Patient Library</a>
+            <a href="clinical.html" class="bg-white border border-slate-200 px-8 py-4 rounded-2xl font-bold">Doctor Portal</a>
+        </div>
+    </header>
+</body>
+</html>

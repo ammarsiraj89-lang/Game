@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus AI | Modern Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <button class="new-chat-btn" onclick="createNewChat()">
+                <i class="ph ph-plus"></i> New Chat
+            </button>
+        </div>
+        <div class="chat-history" id="chatHistory">
+            </div>
+        <div class="sidebar-footer">
+            <button class="clear-btn" onclick="clearAllHistory()">
+                <i class="ph ph-trash"></i> Clear All
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="ph ph-list"></i>
+                </button>
+                <h1>Nexus AI</h1>
+            </div>
+            <div class="header-actions">
+                <button id="themeToggle" onclick="toggleTheme()">
+                    <i class="ph ph-moon" id="themeIcon"></i>
+                </button>
+            </div>
+        </header>
+
+        <section class="chat-container" id="chatContainer">
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="logo-large"><i class="ph ph-sparkle"></i></div>
+                <h2>How can I help you today?</h2>
+            </div>
+            </section>
+
+        <footer class="input-area">
+            <div class="input-wrapper">
+                <textarea id="userInput" placeholder="Message Nexus..." rows="1"></textarea>
+                <button id="sendBtn" onclick="handleSendMessage()">
+                    <i class="ph ph-paper-plane-right"></i>
+                </button>
+            </div>
+            <p class="disclaimer">Nexus AI can make mistakes. Check important info.</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
