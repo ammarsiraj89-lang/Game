@@ -705,3 +705,14 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+
+.card-img { 
+    height: 200px; 
+    background-color: #f0f0f0; /* Light gray background for any empty space */
+    background-position: center;
+    background-size: contain; /* This shows the FULL image */
+    background-repeat: no-repeat; /* Prevents the image from tiling */
+    position: relative; 
+}
+

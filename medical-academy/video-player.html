@@ -116,7 +116,7 @@
     <div class="video-container">
         <main class="video-main">
             <div class="video-player-box">
-                <iframe id="mainVideo" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                <iframe id="mainVideo" src="https://www.youtube.com/live/jEOqi5AhffY?si=ZO84Um5TtW2h1BlL" frameborder="0" allowfullscreen></iframe>
             </div>
             
             <div class="video-info">
@@ -176,7 +176,7 @@
                 const videoId = lesson.getAttribute('data-video');
                 const videoTitle = lesson.getAttribute('data-title');
                 
-                iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                iframe.src = `https://www.youtube.com/live/jEOqi5AhffY?si=ZO84Um5TtW2h1BlL${videoId}`;
                 title.innerText = videoTitle;
                 
                 // Smooth scroll to top for mobile users
