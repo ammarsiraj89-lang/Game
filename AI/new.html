@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Ayesha Khan | Compassionate Care</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2a6fdb;
+            --primary-soft: #eef4ff;
+            --secondary: #00c9b7;
+            --accent: #ff7e67;
+            --bg-light: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --glass: rgba(255, 255, 255, 0.8);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-light: #0f172a;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --glass: rgba(30, 41, 59, 0.8);
+            --primary-soft: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus+Jakarta+Sans', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader-circle {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--primary-soft);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        nav.scrolled {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            padding: 12px 10%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        .theme-toggle {
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--primary);
+            background: none;
+            border: none;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+            position: relative;
+            background: radial-gradient(circle at 80% 20%, var(--primary-soft) 0%, transparent 40%);
+        }
+
+        .hero-content {
+            flex: 1;
+            z-index: 10;
+        }
+
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .typing-text {
+            color: var(--primary);
+            border-right: 3px solid var(--primary);
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            animation: typing 3s steps(30, end) forwards;
+        }
+
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+
+        .hero-btns {
+            margin-top: 40px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .btn-primary { background: var(--primary); color: white; border: none; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(42, 111, 219, 0.3); }
+
+        .btn-outline { border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: white; }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 80%;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: morph 10s ease-in-out infinite;
+            box-shadow: var(--card-shadow);
+        }
+
+        @keyframes morph {
+            0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+        }
+
+        /* --- SECTIONS GENERAL --- */
+        section { padding: 100px 10%; }
+        .reveal { opacity: 0; transform: translateY(50px); transition: 0.8s all ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 10px; }
+        .underline { width: 60px; height: 4px; background: var(--primary); margin: 0 auto; border-radius: 2px; }
+
+        /* --- ABOUT & COUNTERS --- */
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+        .stat-card { background: var(--glass); padding: 20px; border-radius: 15px; text-align: center; box-shadow: var(--card-shadow); }
+        .stat-card h3 { font-size: 2rem; color: var(--primary); }
+
+        /* --- SERVICES CARDS --- */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .service-card {
+            background: var(--glass);
+            padding: 40px 30px;
+            border-radius: 20px;
+            transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        .service-card:hover { transform: translateY(-10px); background: var(--primary); color: white; }
+        .service-card i { font-size: 2.5rem; margin-bottom: 20px; color: var(--primary); }
+        .service-card:hover i { color: white; }
+
+        /* --- SKILLS --- */
+        .skills-container { max-width: 800px; margin: 0 auto; }
+        .skill-bar-wrap { margin-bottom: 25px; }
+        .skill-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; }
+        .bar-bg { background: var(--primary-soft); height: 10px; border-radius: 10px; overflow: hidden; }
+        .bar-fill { height: 100%; background: var(--primary); width: 0; transition: 2s ease-out; }
+
+        /* --- TIMELINE --- */
+        .timeline { position: relative; max-width: 800px; margin: 0 auto; }
+        .timeline::after { content: ''; position: absolute; width: 2px; background: var(--primary-soft); top: 0; bottom: 0; left: 50%; }
+        .container-item { padding: 10px 40px; position: relative; width: 50%; }
+        .container-item::after { content: ''; position: absolute; width: 20px; height: 20px; right: -10px; background: var(--primary); top: 15px; border-radius: 50%; z-index: 1; }
+        .right { left: 50%; }
+        .left { left: 0; text-align: right; }
+        .right::after { left: -10px; }
+        .timeline-content { padding: 20px; background: var(--glass); border-radius: 15px; box-shadow: var(--card-shadow); }
+
+        /* --- CONTACT FORM --- */
+        .contact-flex { display: grid; grid-template-columns: 1fr 1.5fr; gap: 50px; }
+        .form-group { margin-bottom: 20px; }
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: var(--glass);
+            color: var(--text-main);
+            outline: none;
+        }
+        input:focus, textarea:focus { border-color: var(--primary); }
+
+        /* --- FOOTER --- */
+        footer { padding: 50px 10%; background: var(--primary-soft); text-align: center; }
+        .social-links { margin: 20px 0; display: flex; justify-content: center; gap: 20px; }
+        .social-links a { color: var(--primary); font-size: 1.5rem; }
+
+        /* --- SCROLL PROGRESS --- */
+        #scroll-progress {
+            position: fixed;
+            top: 0; left: 0; width: 0%; height: 4px;
+            background: var(--secondary);
+            z-index: 1001;
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            .hero { flex-direction: column; text-align: center; padding-top: 120px; }
+            .hero-content h1 { font-size: 2.8rem; }
+            .hero-image img { width: 60%; margin-top: 40px; }
+            .about-grid, .contact-flex { grid-template-columns: 1fr; }
+            .timeline::after { left: 31px; }
+            .container-item { width: 100%; padding-left: 70px; padding-right: 25px; text-align: left; }
+            .container-item::after { left: 21px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+    <div id="scroll-progress"></div>
+
+    <div id="preloader">
+        <div class="loader-circle"></div>
+    </div>
+
+    <nav id="navbar">
+        <a href="#" class="logo">Dr. Fatima</a>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+        </button>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h4 style="color: var(--primary); font-weight: 600; letter-spacing: 2px;">WELCOME</h4>
+            <h1>I am <br><span class="typing-text">Dr. Fatime Ejaz</span></h1>
+            <p style="font-size: 1.2rem; color: var(--text-muted);">MBBS Graduate (2026) • Compassionate Care, Advanced Healing</p>
+            <div class="hero-btns">
+                <a href="#contact" class="btn btn-primary">Book Appointment</a>
+                <a href="#about" class="btn btn-outline">Read Bio</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="image/WhatsApp Image 2026-04-11 at 12.21.42 PM.jpeg" alt="Dr. Fatima Ejaz">
+        </div>
+    </section>
+
+    <section class="reveal" id="about">
+        <div class="section-title">
+            <h2>About Me</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="about-grid">
+            <div>
+                <p>As a 2026 medical graduate, I am committed to bridging the gap between clinical excellence and empathetic patient care. My journey through medical school has been driven by a passion for community health and innovative diagnostic techniques.</p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 class="counter" data-target="500">0</h3>
+                        <p>Patients Seen</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="counter" data-target="1200">0</h3>
+                        <p>Lab Hours</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 class="counter" data-target="12">0</h3>
+                        <p>Certificates</p>
+                    </div>
+                </div>
+            </div>
+            <div class="skills-container">
+                <div class="skill-bar-wrap">
+                    <div class="skill-info"><span>Patient Care</span><span>95%</span></div>
+                    <div class="bar-bg"><div class="bar-fill" data-width="95%"></div></div>
+                </div>
+                <div class="skill-bar-wrap">
+                    <div class="skill-info"><span>Diagnosis</span><span>90%</span></div>
+                    <div class="bar-bg"><div class="bar-fill" data-width="90%"></div></div>
+                </div>
+                <div class="skill-bar-wrap">
+                    <div class="skill-info"><span>Emergency Handling</span><span>85%</span></div>
+                    <div class="bar-bg"><div class="bar-fill" data-width="85%"></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reveal" id="services">
+        <div class="section-title">
+            <h2>Medical Services</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-stethoscope"></i>
+                <h3>General Consultation</h3>
+                <p>Primary care for all ages with detailed focus on patient history.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-heartbeat"></i>
+                <h3>Preventive Care</h3>
+                <p>Focusing on wellness and early detection of chronic conditions.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-video"></i>
+                <h3>Online Consultation</h3>
+                <p>Digital health support from the comfort of your home.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-user-shield"></i>
+                <h3>Health Checkups</h3>
+                <p>Comprehensive annual screenings and physiological assessments.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="reveal" id="experience">
+        <div class="section-title">
+            <h2>Experience</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="timeline">
+            <div class="container-item left">
+                <div class="timeline-content">
+                    <h4>Senior Intern</h4>
+                    <p>City General Hospital (2025 - 2026)</p>
+                    <small>Rotated through ER, Surgery, and Pediatrics departments.</small>
+                </div>
+            </div>
+            <div class="container-item right">
+                <div class="timeline-content">
+                    <h4>MBBS Candidate</h4>
+                    <p>National Medical University (2021 - 2026)</p>
+                    <small>Graduated with honors in Medical Ethics and Anatomy.</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reveal" id="contact">
+        <div class="section-title">
+            <h2>Get In Touch</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="contact-flex">
+            <div>
+                <h3>Contact Info</h3>
+                <p style="margin: 20px 0;"><i class="fas fa-envelope" style="color: var(--primary); margin-right: 10px;"></i> hello@dr-ayesha.com</p>
+                <p style="margin: 20px 0;"><i class="fas fa-phone" style="color: var(--primary); margin-right: 10px;"></i> +1 (555) 000-2026</p>
+                <p style="margin: 20px 0;"><i class="fas fa-location-dot" style="color: var(--primary); margin-right: 10px;"></i> Medical Center Blvd, Suite 100</p>
+            </div>
+            <form id="contactForm" onsubmit="handleForm(event)">
+                <div class="form-group">
+                    <input type="text" id="name" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" rows="5" placeholder="How can I help you?" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+        <p>&copy; 2026 Dr. Ayesha Khan. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Preloader
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            setTimeout(() => preloader.style.display = 'none', 500);
+        });
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.querySelector('.theme-toggle i');
+            if (body.getAttribute('data-theme') === 'light') {
+                body.setAttribute('data-theme', 'dark');
+                icon.className = 'fas fa-sun';
+            } else {
+                body.setAttribute('data-theme', 'light');
+                icon.className = 'fas fa-moon';
+            }
+        }
+
+        // Scroll Progress & Navbar Effect
+        window.onscroll = function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scroll-progress").style.width = scrolled + "%";
+
+            const nav = document.getElementById('navbar');
+            if (winScroll > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        };
+
+        // Reveal Animations using Intersection Observer
+        const observerOptions = { threshold: 0.2 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Trigger skill bars and counters specifically
+                    if (entry.target.id === 'about') {
+                        startCounters();
+                        animateBars();
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Skill Bars Animation
+        function animateBars() {
+            const bars = document.querySelectorAll('.bar-fill');
+            bars.forEach(bar => {
+                bar.style.width = bar.getAttribute('data-width');
+            });
+        }
+
+        // Counter Animation
+        function startCounters() {
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const increment = target / 100;
+                const updateCounter = () => {
+                    const count = +counter.innerText;
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + increment);
+                        setTimeout(updateCounter, 20);
+                    } else {
+                        counter.innerText = target + "+";
+                    }
+                };
+                updateCounter();
+            });
+        }
+
+        // Form Handling
+        function handleForm(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                alert("Thank you! Your appointment request has been sent successfully.");
+                btn.innerText = originalText;
+                btn.disabled = false;
+                e.target.reset();
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
