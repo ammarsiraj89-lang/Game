@@ -286,6 +286,107 @@
             .container-item::after { left: 21px; }
             .nav-links { display: none; }
         }
+        /* --- COMPREHENSIVE MOBILE RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    /* Navbar Adjustments */
+    nav {
+        padding: 15px 5%;
+    }
+    
+    .nav-links {
+        display: none; /* Consider adding a hamburger menu for full production */
+    }
+
+    /* Hero Section - Stacked Layout */
+    .hero {
+        flex-direction: column-reverse; /* Image on top, text below for better mobile flow */
+        justify-content: center;
+        text-align: center;
+        padding: 120px 5% 50px 5%;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .hero-content h1 {
+        font-size: 2.8rem;
+        margin-top: 20px;
+    }
+
+    .hero-btns {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .hero-image img {
+        width: 70%;
+        margin-bottom: 20px;
+    }
+
+    /* Sections Padding */
+    section {
+        padding: 60px 5%;
+    }
+
+    /* About Grid */
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr; /* Stack stats on small screens */
+    }
+
+    /* Timeline - Simplified for Mobile */
+    .timeline::after {
+        left: 31px;
+    }
+
+    .container-item {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 20px;
+        text-align: left !important;
+    }
+
+    .container-item::after {
+        left: 21px;
+    }
+
+    .left::after, .right::after {
+        left: 21px;
+    }
+
+    .right {
+        left: 0;
+    }
+
+    /* Contact Form */
+    .contact-flex {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-title h2 {
+        font-size: 2rem;
+    }
+}
+
+/* Extra Small Devices (Phones under 400px) */
+@media (max-width: 400px) {
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
+    
+    .stat-card h3 {
+        font-size: 1.5rem;
+    }
+}
     </style>
 </head>
 <body data-theme="light">
